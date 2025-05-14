@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Exousia - Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      background: #0e0e16;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .card {
+      background: #1e1e2d;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    a.button {
+      display: inline-block;
+      background: #e0aaff;
+      color: #000;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Your Dashboard</h1>
+    <div class="card">
+      <p><strong>Email:</strong> <span id="user-email">Loading...</span></p>
+      <p><strong>Total Points:</strong> <span id="user-points">...</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Airdrop Tasks</h3>
+      <a href="#" class="button">🎮 Play Games (Coming Soon)</a><br/>
+      <a href="#" class="button">🤝 Referral Program</a><br/>
+      <a href="#" class="button">📢 Social Tasks</a>
+    </div>
+
+    <a href="#" onclick="logout()" class="button">🚪 Logout</a>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://xjleukipuugxqpmtyput.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhqbGV1a2lwdXVneHFwbXR5cHV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY1NzcsImV4cCI6MjA2MjgxMjU3N30.I3uNaVEEFXAK4d6w8VtVcrkYPaQ7S6Ga8_Y2BxYf9AU';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadUser() {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) {
+        window.location.href = "auth.html";
+        return;
+      }
+
+      document.getElementById("user-email").textContent = user.email;
+
+      // Fetch total points
+      const { data, error: pointsError } = await supabase
+        .from('user_total_points')
+        .select('total_points')
+        .eq('user_id', user.id)
+        .single();
+
+      document.getElementById("user-points").textContent = pointsError ? '0' : data.total_points;
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "auth.html";
+    }
+
+    loadUser();
+  </script>
+</body>
+</html>
