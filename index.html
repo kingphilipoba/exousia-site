@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Exousia ($EXO) Token</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <style>
     body {
       margin: 0;
@@ -44,6 +45,19 @@
       display: inline-block;
       margin-top: 1rem;
     }
+    .form-box {
+      background: #1e1e2f;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 5px;
+    }
     footer {
       text-align: center;
       padding: 1rem;
@@ -63,8 +77,20 @@
   </header>
 
   <div class="section">
-    <h2>What is Exousia?</h2>
-    <p><strong>Exousia ($EXO)</strong> is a capped, mintable, burnable utility token built on the <span class="highlight">Polygon blockchain</span>, fueling a next-gen airdrop ecosystem powered by <strong>gaming.</strong></p>
+    <h2>Join Airdrop - Register or Log In</h2>
+    <div class="form-box">
+      <h3>Register</h3>
+      <input type="email" id="registerEmail" placeholder="Email" />
+      <input type="password" id="registerPassword" placeholder="Password" />
+      <button class="btn" onclick="registerUser()">Register</button>
+    </div>
+    <div class="form-box">
+      <h3>Login</h3>
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button class="btn" onclick="loginUser()">Login</button>
+    </div>
+    <div id="authMessage"></div>
   </div>
 
   <div class="section">
@@ -75,18 +101,7 @@
       <li>✅ It can be <strong>traded</strong> via decentralized platforms</li>
       <li>🛠️ Utilities like <strong>airdrops, dashboard, games, and tasks</strong> launch in <strong>Q4 2025</strong></li>
     </ul>
-    <p>We're building steadily and securely — join early, track progress, and grow with us!</p>
     <p>🔗 <strong>Trade now on QuickSwap:</strong> <a href="https://quickswap.exchange/#/swap?outputCurrency=0x14aDc9c89B5d841d5F0363608e79E080A14637aE" target="_blank">QuickSwap $EXO Market</a></p>
-  </div>
-
-  <div class="section">
-    <h2>How It Works</h2>
-    <ol>
-      <li>Sign up and play supported games (like Ludo, Whot, etc.)</li>
-      <li>Earn points based on your gameplay</li>
-      <li>Convert points into $EXO during airdrop rounds</li>
-    </ol>
-    <a class="btn" href="#">Join Airdrop (Coming Soon)</a>
   </div>
 
   <div class="section">
@@ -112,5 +127,29 @@
     &copy; 2025 Exousia. All rights reserved.<br/>
     Contact: <a href="mailto:exousiatokendevelopers@gmail.com">exousiatokendevelopers@gmail.com</a>
   </footer>
+
+  <script>
+    const supabase = supabase.createClient(
+      'https://xjleukipuugxqpmtyput.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhqbGV1a2lwdXVneHFwbXR5cHV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY1NzcsImV4cCI6MjA2MjgxMjU3N30.I3uNaVEEFXAK4d6w8VtVcrkYPaQ7S6Ga8_Y2BxYf9AU'
+    );
+
+    async function registerUser() {
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      document.getElementById('authMessage').innerText = error ? error.message : 'Registration successful! Check your email.';
+    }
+
+    async function loginUser() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      document.getElementById('authMessage').innerText = error ? error.message : 'Login successful!';
+      if (!error) {
+        window.location.href = 'dashboard.html';
+      }
+    }
+  </script>
 </body>
 </html>
